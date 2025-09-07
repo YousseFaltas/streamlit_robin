@@ -113,11 +113,11 @@ if st.session_state.processing:
         full_response = ""
         assistant_response = response(last_prompt)
         
-        for chunk in assistant_response.split():
-            full_response += chunk + " "
-            time.sleep(0.05)
-            message_placeholder.markdown(full_response + "▌")
-        message_placeholder.markdown(full_response)
+        # for chunk in assistant_response.split():
+        #     full_response += chunk + " "
+        #     time.sleep(0.05)
+        #     message_placeholder.markdown(full_response + "▌")
+        message_placeholder.markdown(assistant_response)
         
     st.session_state.messages.append({"role": "assistant", "content": full_response})
     
