@@ -20,7 +20,7 @@ if "processing" not in st.session_state:
 st.markdown("""
 <style>
     [data-testid="stAppViewContainer"] {
-        background: linear-gradient(135deg, #00EFF0 5%, #A0F5F5 25%, #FFFFFF 40%);
+        background: linear-gradient(150deg, #00EFF0 5%, #A0F5F5 25%, #FFFFFF 40%);
         background-attachment: fixed;
     }
     /* Base style for the input box */
