@@ -1,13 +1,8 @@
 import streamlit as st
 import time
 import requests 
-import os
-from dotenv import load_dotenv
 
-
-load_dotenv()
-
-FASTAPI_URL = os.getenv("FASTAPI_URL")
+FASTAPI_URL =  ""
 
 st.set_page_config(page_title="Robin - AI Chatbot", page_icon="🤖")
 
