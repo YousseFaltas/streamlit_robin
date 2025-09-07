@@ -12,7 +12,7 @@ st.markdown("""
     /* More reliable selector for the main background */
     [data-testid="stAppViewContainer"] {
         /* Gradient background from your palette */
-        background: linear-gradient(to bottom, #00EFF0 5%, #FFFFFF 40%);
+        background: linear-gradient(135deg, #00EFF0 5%, #FFFFFF 40%);
         background-attachment: fixed;
     }
 
