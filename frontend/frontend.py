@@ -40,7 +40,6 @@ st.markdown("""
         /* This is the outer black border from your image */
         border: 3px solid black;
         border-radius: 25px; /* Adjust for more or less rounding */
-        padding: 5px; /* Space between the outer border and the input field */
         background-color: white; /* Ensures a solid background */
     }
 
