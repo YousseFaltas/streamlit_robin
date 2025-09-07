@@ -20,7 +20,7 @@ if "processing" not in st.session_state:
 st.markdown("""
 <style>
     [data-testid="stAppViewContainer"] {
-        background: linear-gradient(135deg, #00EFF0 5%, #A0F5F5 50%, #FFFFFF 90%);
+        background: linear-gradient(135deg, #00EFF0 5%, #A0F5F5 25%, #FFFFFF 90%);
         background-attachment: fixed;
     }
 </style>
