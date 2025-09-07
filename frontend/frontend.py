@@ -39,7 +39,7 @@ st.markdown("""
         background-color: #FFFFFF;
         color: #2E2E2E; /* Dark Grey for input text */
         border-radius: 10px;
-        border: 2px solid #BFBFBF; /* Neutral light grey border */
+        border: 10px solid #2E2E2E; /* Neutral light grey border */
         transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
     }
     
