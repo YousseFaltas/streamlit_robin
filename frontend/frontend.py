@@ -34,6 +34,12 @@ st.markdown("""
         );
         background-attachment: fixed;
     }
+    /* Target the chat input container */
+    [data-testid="stChatInput"] {
+        border: 1px solid black;
+        border-radius: 12px; /* Optional: adds rounded corners */
+        padding: 0 10px; /* Optional: adds a little space inside */
+    }
 </style>
 """, unsafe_allow_html=True)
 
