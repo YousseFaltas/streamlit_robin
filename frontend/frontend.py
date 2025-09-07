@@ -109,13 +109,20 @@ if st.session_state.processing:
     last_prompt = st.session_state.messages[-1]["content"]
     
     with st.chat_message("assistant"):
-            message_placeholder = st.empty()
-            assistant_response = response(last_prompt)
-            
-            # Display the full response at once
-            message_placeholder.markdown(assistant_response)
+        message_placeholder = st.empty()
+        full_response = ""
+        assistant_response = response(last_prompt)
         
-    st.session_state.messages.append({"role": "assistant", "content": assistant_response})
+        # Iterate over lines instead of words
+        for line in assistant_response.splitlines():
+            full_response += line + "\n"
+            time.sleep(0.05)
+            message_placeholder.markdown(full_response + "▌")
+        
+        # Final display without the cursor
+        message_placeholder.markdown(full_response)
+        
+    st.session_state.messages.append({"role": "assistant", "content": full_response})
     
     st.session_state.processing = False
     st.rerun()
