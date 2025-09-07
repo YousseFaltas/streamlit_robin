@@ -19,6 +19,9 @@ if "processing" not in st.session_state:
 
 st.markdown("""
 <style>
+    [data-testid="stHeader"] {
+        display: none;
+    }
     [data-testid="stAppViewContainer"] {
         /* A 5-stop gradient for an ultra-smooth transition */
         background: linear-gradient(
