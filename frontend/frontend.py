@@ -20,8 +20,35 @@ if "processing" not in st.session_state:
 st.markdown("""
 <style>
     [data-testid="stAppViewContainer"] {
-        background: linear-gradient(135deg, #00EFF0 5%, #A0F5F5 25%, #FFFFFF 90%);
+        background: linear-gradient(135deg, #00EFF0 5%, #A0F5F5 25%, #FFFFFF 40%);
         background-attachment: fixed;
+    }
+    /* Base style for the input box */
+    .stTextInput > div > div > input {
+        background-color: #FFFFFF;
+        color: #2E2E2E; /* Dark Grey for input text */
+        border-radius: 10px;
+        border: 2px solid #BFBFBF; /* Neutral light grey border */
+        transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+    }
+    
+    /* Style for the input box WHEN FOCUSED (selected) */
+    .stTextInput > div > div > input:focus {
+        border-color: #00F700; /* Bright green border on focus */
+        box-shadow: 0 0 5px #00F700; /* Add a subtle glow */
+        outline: none; /* REMOVES THE BLACK/BLUE OUTLINE */
+    }
+
+    /* Send button style */
+    .stButton > button {
+        background-color: #00F700; /* Bright Green */
+        color: #2E2E2E; /* Dark Grey text */
+        border-radius: 10px;
+        border: none;
+    }
+    .stButton > button:hover {
+        background-color: #A2FBAC; /* Lighter Green on hover */
+        color: #2E2E2E;
     }
 </style>
 """, unsafe_allow_html=True)
