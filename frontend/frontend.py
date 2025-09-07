@@ -113,11 +113,17 @@ if st.session_state.processing:
         full_response = ""
         assistant_response = response(last_prompt)
         
+        # for chunk in assistant_response.split():
+        #     full_response += chunk + " "
+        #     time.sleep(0.05)
+        #     message_placeholder.markdown(full_response + "▌")
         # Iterate over lines instead of words
         for line in assistant_response.splitlines():
-            full_response += line + "\n"
-            time.sleep(0.05)
-            message_placeholder.markdown(full_response + "▌")
+            for chunk in line.split():
+                full_response += chunk + " "
+                time.sleep(0.05)
+                message_placeholder.markdown(full_response + "▌")
+            full_response = full_response + "\n"
         
         # Final display without the cursor
         message_placeholder.markdown(full_response)
