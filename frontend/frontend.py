@@ -19,7 +19,12 @@ if "processing" not in st.session_state:
 
 st.markdown("""
 <style>
-
+    /* More reliable selector for the main background */
+    [data-testid="stAppViewContainer"] {
+        /* Gradient background from your palette */
+        background: linear-gradient(to bottom, #00EFF0 5%, #FFFFFF 40%);
+        background-attachment: fixed;
+    }
 </style>
 """, unsafe_allow_html=True)
 
