@@ -35,10 +35,27 @@ st.markdown("""
         background-attachment: fixed;
     }
     /* Target the chat input container */
+    /* Main container for the chat input */
     [data-testid="stChatInput"] {
-        border: 5px solid black;
-        border-radius: 20px; /* Optional: adds rounded corners */
-        padding: 0 10px; /* Optional: adds a little space inside */
+        /* This is the outer black border from your image */
+        border: 3px solid black;
+        border-radius: 25px; /* Adjust for more or less rounding */
+        padding: 5px; /* Space between the outer border and the input field */
+        background-color: white; /* Ensures a solid background */
+    }
+
+    /* This targets the inner input field where the red highlight appears */
+    div[data-baseweb="base-input"] {
+        /* Removes the default border of the inner field */
+        border: none !important;
+        box-shadow: none !important; /* Removes any shadow effect */
+    }
+
+    /* This specifically handles the focused state */
+    div[data-baseweb="base-input"]:focus-within {
+        /* Removes the red border/shadow on focus */
+        border: none !important;
+        box-shadow: none !important;
     }
 </style>
 """, unsafe_allow_html=True)
