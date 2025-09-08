@@ -2,7 +2,7 @@ import streamlit as st
 import time
 import requests 
 
-FASTAPI_URL =  "https://c6dce939be66.ngrok-free.app"
+FASTAPI_URL =  "https://18272ade148e.ngrok-free.app"
 
 st.set_page_config(page_title="Robin - AI Chatbot", page_icon="🤖")
 
