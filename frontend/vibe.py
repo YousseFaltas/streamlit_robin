@@ -1,149 +1,178 @@
 import streamlit as st
 import time
+import requests
+import re
 
-# --- PAGE CONFIGURATION ---
-st.set_page_config(
-    page_title="AI Assistant Chat",
-    layout="wide"
-)
+FASTAPI_URL = "https://c7c9b73b06f5.ngrok-free.app"
 
-# --- CUSTOM STYLING (CSS) ---
-st.markdown("""
-<style>
-    /* Hide the default Streamlit header and footer */
-    header, footer {
-        visibility: hidden;
-    }
+# --- LOGIN LOGIC (MODIFIED) ---
 
-    /******************************************************************
-     * THE MAIN CHANGE IS HERE: Updated the .stApp background.        *
-     ******************************************************************/
-    .stApp {
-        background-image: linear-gradient(135deg, #00EFF0 0%, #E0E2E6 100%);
-        background-attachment: fixed; /* Keeps the gradient fixed during scroll */
-    }
+def check_login():
+    """Displays an email login form and returns True if the email is valid."""
+    st.set_page_config(page_title="Login - Robin AI", layout="centered")
+    st.title("Welcome to Robin 🤖")
+    st.markdown("Please enter your email to continue.")
 
-    /******************************************************************
-     * Sidebar Styling (Unchanged)                                    *
-     ******************************************************************/
-    [data-testid="stSidebar"] {
-        background-color: #1C1C1E;
-        padding-top: 2rem;
-    }
-
-    .sidebar-text {
-        color: #BFBFBF;
-        font-size: 16px;
-        padding: 10px 20px;
-        display: block;
-        font-weight: 500;
-    }
-
-    .sidebar-text:hover {
-        background-color: #333333;
-        color: white;
-        text-decoration: none;
-    }
-
-    /******************************************************************
-     * Main Chat Area Styling (Text colors updated for contrast)      *
-     ******************************************************************/
-
-    /* Title styling - now dark */
-    h1 {
-        color: #2E2E2E; /* UPDATED: Dark text for readability */
-        font-weight: bold;
-        padding-top: 1rem;
-    }
-
-    /* Assistant message styling - now dark */
-    div[data-testid="stChatMessage"]:has(div[data-testid="chat-bubble-avatar-assistant"]) [data-testid="stChatMessageContent"] {
-       color: #2E2E2E; /* UPDATED: Dark text */
-       background-color: transparent;
-    }
-
-    /* Assistant avatar styling */
-    [data-testid="chat-bubble-avatar-assistant"] {
-        background-color: #2E2E2E;
-        border-radius: 50%;
-    }
-    
-    [data-testid="chat-bubble-avatar-assistant"] > div {
-        color: white;
-    }
-
-    /* Timestamp styling - now dark */
-    [data-testid="chat-message-timestamp"] {
-        font-size: 0.75rem;
-        color: #444444; /* UPDATED: Dark grey text */
-        padding-top: 8px;
-        padding-left: 58px;
-        position: relative;
-        top: -10px;
-    }
-    
-    /******************************************************************
-     * Floating Chat Input Bar Styling (Unchanged)                    *
-     ******************************************************************/
-    [data-testid="stChatFloatingInputContainer"] {
-        background-color: #1C1C1E;
-        padding: 10px 20px;
-        border-top: 2px solid #000000;
-        box-shadow: none;
-    }
-
-    [data-testid="stChatInput"] > div {
-        background-color: #333333;
-        border: none;
-        border-radius: 12px;
-    }
-    
-    [data-testid="baseButton-secondary"] {
-        background-color: #333333;
-        border-radius: 8px;
-    }
-    
-    [data-testid="baseButton-secondary"]:hover {
-        background-color: #444444;
-    }
-
-    [data-testid="baseButton-secondary"] svg {
-        fill: #BFBFBF;
-    }
-
-</style>
-""", unsafe_allow_html=True)
-
-
-# --- APPLICATION LOGIC ---
-
-st.markdown("<h1>AI Assistant Chat 🔗</h1>", unsafe_allow_html=True)
-
-if "messages" not in st.session_state:
-    st.session_state.messages = [
-        {"role": "assistant", "content": "Hello! I'm Robin's AI assistant. How can I help you today?", "time": "02:23 PM"}
-    ]
-
-for message in st.session_state.messages:
-    # Set avatar icon based on role
-    avatar_icon = "🤖" if message["role"] == "assistant" else "😊"
-    with st.chat_message(message["role"], avatar=avatar_icon):
-        st.write(message["content"])
-        # Custom div to apply specific timestamp styling
-        st.markdown(f'<div data-testid="chat-message-timestamp">{message["time"]}</div>', unsafe_allow_html=True)
-
-
-# Capture user input from the chat box
-if prompt := st.chat_input("Type your message here..."):
-    current_time = "12:04 PM"
-    
-    st.session_state.messages.append({"role": "user", "content": prompt, "time": current_time})
-    with st.chat_message("user", avatar="😊"):
-        st.write(prompt)
-        st.markdown(f'<div data-testid="chat-message-timestamp">{current_time}</div>', unsafe_allow_html=True)
+    # CSS to style the text input container
+    st.markdown("""
+    <style>
+        /* This targets the container holding the input field */
+        [data-testid="stTextInput"] {
+            border: 3px solid black !important;
+            border-radius: 10px !important;
+        }
         
-    error_response = "API Error: Failed to fetch. Please check if your server is running."
-    st.session_state.messages.append({"role": "assistant", "content": error_response, "time": current_time})
-    with st.chat_message("assistant", avatar="🤖"):
-        st.write(error_response)
-        st.markdown(f'<div data-testid="chat-message-timestamp">{current_time}</div>', unsafe_allow_html=True)
+        /* This ensures the actual input field inside has no border */
+        div[data-baseweb="base-input"] {
+            border: none !important;
+            background-color: transparent !important;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # Wrap the form in a div with the "login-container" class
+    st.markdown('<div class="login-container">', unsafe_allow_html=True)
+
+    with st.form("login_form"):
+        # --- THIS IS THE KEY CHANGE ---
+        email = st.text_input(
+            "Email", 
+            placeholder="Email", 
+            label_visibility="collapsed", 
+            key="email_input"
+        )
+        
+        submitted = st.form_submit_button("Login")
+
+        if submitted:
+            email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+            if re.match(email_regex, email):
+                st.session_state.logged_in = True
+                st.rerun()
+            else:
+                st.error("Please enter a valid email address.")
+
+    st.markdown('</div>', unsafe_allow_html=True)
+    return False
+
+# --- MAIN APP ---
+
+def main_app():
+    """This function runs the main chatbot application after login."""
+    st.set_page_config(page_title="Robin - AI Chatbot", page_icon="🤖")
+
+    st.title("Welcome to Robin 🤖")
+    st.markdown("Your Data Science & AI Partner")
+    
+    # # Sidebar with logout button
+    # with st.sidebar:
+    #     if st.button("Logout"):
+    #         st.session_state.logged_in = False
+    #         st.rerun()
+
+    # Initialize session state variables for the chat
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+    if "processing" not in st.session_state:
+        st.session_state.processing = False
+
+    st.markdown("""
+    <style>
+        [data-testid="stHeader"] {
+            display: none;
+        }
+        [data-testid="stSidebar"] {
+            background-color: #A0F5F5;
+        }
+        [data-testid="stAppViewContainer"] {
+            background: linear-gradient(
+                to bottom,
+                #00EFF0 5%,
+                #A0F5F5 30%,
+                #CFFBFB 55%,
+                #EFFFFF 75%,
+                #FFFFFF 90%
+            );
+            background-attachment: fixed;
+        }
+        [data-testid="stChatInput"] {
+            border: 3px solid black;
+            border-radius: 25px;
+            background-color: white;
+        }
+        div[data-baseweb="base-input"] {
+            border: none !important;
+            box-shadow: none !important;
+        }
+        div[data-baseweb="base-input"]:focus-within {
+            border: none !important;
+            box-shadow: none !important;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+    def response(prompt):
+        """Sends a prompt to the FastAPI backend and gets the response."""
+        payload = {"message": prompt, "identifier": "x"}
+        try:
+            api_response = requests.post(FASTAPI_URL, json=payload)
+            if api_response.status_code == 200:
+                return api_response.json().get("answer", "Sorry, I couldn't get a valid response.")
+            else:
+                error_detail = api_response.json().get('detail', 'Unknown error')
+                return f"Error from server: {error_detail}"
+        except requests.exceptions.RequestException as e:
+            st.error(f"Could not connect to the FastAPI server at {FASTAPI_URL}. Please ensure it is running.")
+            return "Sorry, I'm having trouble connecting to my brain right now."
+
+    # Initial greeting from assistant
+    with st.chat_message("assistant"):
+        message_placeholder = st.empty()
+        assistant_response = "Hi, how can I help you today?"
+        message_placeholder.markdown(assistant_response)
+
+    # Display past messages
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+    # Handle new user input
+    if prompt := st.chat_input("How can we help you?", disabled=st.session_state.processing, key="chat_input"):
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        with st.chat_message("user"):
+            st.markdown(prompt)
+        st.session_state.processing = True
+        st.rerun()
+
+    # Generate and display bot response if processing
+    if st.session_state.processing:
+        last_prompt = st.session_state.messages[-1]["content"]
+        with st.chat_message("assistant"):
+            message_placeholder = st.empty()
+            full_response = ""
+            assistant_response = response(last_prompt)
+
+            for line in assistant_response.splitlines():
+                for chunk in line.split():
+                    full_response += chunk + " "
+                    time.sleep(0.05)
+                    message_placeholder.markdown(full_response + "▌")
+                full_response += "\n"
+
+            message_placeholder.markdown(full_response)
+        st.session_state.messages.append({"role": "assistant", "content": full_response})
+        st.session_state.processing = False
+        st.rerun()
+
+
+# --- APP ROUTER ---
+
+# Initialize session state for login status if it doesn't exist
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+
+# Display login page or main app based on login status
+if st.session_state.logged_in:
+    main_app()
+else:
+    check_login()
