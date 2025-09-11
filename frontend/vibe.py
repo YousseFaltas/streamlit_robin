@@ -150,7 +150,8 @@ def main_app():
         with st.chat_message("assistant"):
             message_placeholder = st.empty()
             full_response = ""
-            assistant_response = response(last_prompt)
+            with st.spinner("Thinking..."):
+                assistant_response = response(last_prompt)
 
             for line in assistant_response.splitlines():
                 for chunk in line.split():
