@@ -3,7 +3,7 @@ import time
 import requests
 import re
 
-FASTAPI_URL = "https://ae94f64c684a.ngrok-free.app"
+FASTAPI_URL = "https://632cdf7d2c0e.ngrok-free.app"
 
 # --- LOGIN LOGIC (MODIFIED) ---
 
